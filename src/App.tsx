@@ -5,6 +5,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { Dashboard } from './pages/Dashboard';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -24,7 +25,7 @@ function App() {
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Layout>
-                    <div>Dashboard</div>
+                    <Dashboard />
                   </Layout>
                 </ProtectedRoute>
               } />
