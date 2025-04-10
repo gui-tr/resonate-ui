@@ -6,6 +6,7 @@ import { Layout } from './components/Layout';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
+import { Releases } from './pages/Releases';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -32,7 +33,7 @@ function App() {
               <Route path="/releases" element={
                 <ProtectedRoute>
                   <Layout>
-                    <div>Releases</div>
+                    <Releases />
                   </Layout>
                 </ProtectedRoute>
               } />
