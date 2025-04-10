@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
+import { Login } from './pages/Login';
+import { Register } from './pages/Register';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -15,8 +17,8 @@ function App() {
           <div className="min-h-screen bg-gray-100">
             <Routes>
               {/* Public routes */}
-              <Route path="/login" element={<div>Login Page</div>} />
-              <Route path="/register" element={<div>Register Page</div>} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
               
               {/* Protected routes */}
               <Route path="/dashboard" element={
