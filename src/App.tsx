@@ -8,6 +8,7 @@ import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Releases } from './pages/Releases';
 import { ReleaseDetail } from './pages/ReleaseDetail';
+import { CreateRelease } from './pages/CreateRelease';
 
 // Create a client with default options
 const queryClient = new QueryClient({
@@ -63,9 +64,9 @@ function App() {
               
               {/* Artist-specific routes */}
               <Route path="/artist/releases/new" element={
-                <ProtectedRoute requireArtist>
+                <ProtectedRoute>
                   <Layout>
-                    <div>New Release</div>
+                    <CreateRelease />
                   </Layout>
                 </ProtectedRoute>
               } />

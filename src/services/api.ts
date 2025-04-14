@@ -10,7 +10,7 @@ import type {
   ApiError
 } from '../types/api';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 class ApiService {
   private api: AxiosInstance;
@@ -113,6 +113,28 @@ class ApiService {
 
   async getAudioFile(id: number): Promise<AudioFile> {
     const response = await this.api.get<AudioFile>(`/audio-files/${id}`);
+    return response.data;
+  }
+
+  async getUploadUrl(fileName: string, contentType: string): Promise<{ uploadUrl: string; fileKey: string }> {
+    const response = await this.api.get('/audio-files/upload', {
+      params: { fileName, contentType }
+    });
+    return response.data;
+  }
+
+  async registerAudioFile(fileData: { fileKey: string; fileSize: number; checksum: string }): Promise<AudioFile> {
+    const response = await this.api.post<AudioFile>('/audio-files/register', fileData);
+    return response.data;
+  }
+
+  async getStreamingUrl(id: number): Promise<{ streamingUrl: string }> {
+    const response = await this.api.get<{ streamingUrl: string }>(`/audio-files/${id}/stream`);
+    return response.data;
+  }
+
+  async createTrack(track: { title: string; releaseId: number }, releaseId: number, audioFileId?: number): Promise<Track> {
+    const response = await this.api.post<Track>(`/releases/${releaseId}/tracks`, track);
     return response.data;
   }
 }

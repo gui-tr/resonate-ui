@@ -47,13 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await apiService.login(email, password);
       console.log('Login response:', response);
       
-      // Check if email is verified
-      if (!response.emailVerified) {
-        setError('Please verify your email before logging in');
-        setRegistrationStatus('pending');
-        throw new Error('Email not verified');
-      }
-
+      // If login succeeds, the backend has already verified the email
       localStorage.setItem('token', response.token);
       localStorage.setItem('userId', response.userId);
       if (response.userType) {
@@ -68,7 +62,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log('Login successful, token stored:', localStorage.getItem('token'));
     } catch (err) {
       console.error('Login error:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred during login');
+      // If the error is about email verification, set the appropriate status
+      if (err instanceof Error && err.message.includes('Email not verified')) {
+        setRegistrationStatus('pending');
+        setError('Please verify your email before logging in');
+      } else {
+        setError(err instanceof Error ? err.message : 'An error occurred during login');
+      }
       throw err;
     }
   };
@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setError(null);
       const response = await apiService.register(email, password, userType, bio);
       setRegistrationStatus('pending');
-      // Don't automatically log in after registration
+      // Keep the email verification message for registration
       setError('Please check your email to verify your account before logging in');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred during registration');
