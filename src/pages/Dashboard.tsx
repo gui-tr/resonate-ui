@@ -31,11 +31,11 @@ export function Dashboard() {
         </div>
         {isLoading ? (
           <div className="px-4 py-5 sm:px-6">Loading...</div>
-        ) : releases?.content.length === 0 ? (
+        ) : !releases || releases.length === 0 ? (
           <div className="px-4 py-5 sm:px-6 text-gray-500">No releases yet</div>
         ) : (
           <ul className="divide-y divide-gray-200">
-            {releases?.content.map((release) => (
+            {releases.map((release) => (
               <li key={release.id}>
                 <Link to={`/releases/${release.id}`} className="block hover:bg-gray-50">
                   <div className="px-4 py-4 sm:px-6">

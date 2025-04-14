@@ -10,7 +10,7 @@ import type {
   ApiError
 } from '../types/api';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
 class ApiService {
   private api: AxiosInstance;
@@ -21,15 +21,6 @@ class ApiService {
       headers: {
         'Content-Type': 'application/json',
       },
-    });
-
-    // Add request interceptor for auth token
-    this.api.interceptors.request.use((config) => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
     });
   }
 
@@ -45,30 +36,32 @@ class ApiService {
   }
 
   // Artist profile endpoints
-  async getArtistProfile(): Promise<ArtistProfile> {
-    const response = await this.api.get<ArtistProfile>('/artist-profiles');
+  async getArtistProfile(userId: string): Promise<ArtistProfile> {
+    const response = await this.api.get<ArtistProfile>(`/artist-profiles/${userId}`);
     return response.data;
   }
 
-  async updateArtistProfile(profile: Partial<ArtistProfile>): Promise<ArtistProfile> {
-    const response = await this.api.post<ArtistProfile>('/artist-profiles', profile);
+  async updateArtistProfile(userId: string, profile: Partial<ArtistProfile>): Promise<ArtistProfile> {
+    const response = await this.api.put<ArtistProfile>(`/artist-profiles/${userId}`, profile);
     return response.data;
   }
 
   // Fan profile endpoints
-  async getFanProfile(): Promise<FanProfile> {
-    const response = await this.api.get<FanProfile>('/fan-profiles');
+  async getFanProfile(userId: string): Promise<FanProfile> {
+    const response = await this.api.get<FanProfile>(`/fan-profiles/${userId}`);
     return response.data;
   }
 
-  async updateFanProfile(profile: Partial<FanProfile>): Promise<FanProfile> {
-    const response = await this.api.post<FanProfile>('/fan-profiles', profile);
+  async updateFanProfile(userId: string, profile: Partial<FanProfile>): Promise<FanProfile> {
+    const response = await this.api.put<FanProfile>(`/fan-profiles/${userId}`, profile);
     return response.data;
   }
 
   // Release endpoints
-  async getReleases(page = 0, size = 20): Promise<{ content: Release[]; total: number }> {
-    const response = await this.api.get('/releases/public', { params: { page, size } });
+  async getReleases(page = 0, size = 20): Promise<Release[]> {
+    const response = await this.api.get<Release[]>('/releases/public', { 
+      params: { page, size } 
+    });
     return response.data;
   }
 
@@ -91,40 +84,31 @@ class ApiService {
     await this.api.delete(`/releases/${id}`);
   }
 
+  async getArtistReleases(artistId: string): Promise<Release[]> {
+    const response = await this.api.get<Release[]>(`/releases/artist/${artistId}`);
+    return response.data;
+  }
+
   // Track endpoints
-  async createTrack(track: Partial<Track>, releaseId: number, audioFileId?: number): Promise<Track> {
-    const response = await this.api.post<Track>('/tracks', track, {
-      params: { releaseId, audioFileId }
-    });
+  async addTrack(releaseId: number, track: Partial<Track>): Promise<Track> {
+    const response = await this.api.post<Track>(`/releases/${releaseId}/tracks`, track);
     return response.data;
-  }
-
-  async updateTrack(id: number, track: Partial<Track>, audioFileId?: number): Promise<Track> {
-    const response = await this.api.put<Track>(`/tracks/${id}`, track, {
-      params: { audioFileId }
-    });
-    return response.data;
-  }
-
-  async deleteTrack(id: number): Promise<void> {
-    await this.api.delete(`/tracks/${id}`);
   }
 
   // Audio file endpoints
-  async getUploadUrl(fileName: string, contentType: string): Promise<{ uploadUrl: string; fileKey: string; bucketName: string }> {
-    const response = await this.api.get('/audio-files/upload', {
-      params: { fileName, contentType }
+  async uploadAudioFile(file: File): Promise<AudioFile> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await this.api.post<AudioFile>('/audio-files', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
     return response.data;
   }
 
-  async registerAudioFile(fileData: { fileKey: string; fileSize: number; checksum: string }): Promise<AudioFile> {
-    const response = await this.api.post<AudioFile>('/audio-files/register', fileData);
-    return response.data;
-  }
-
-  async getStreamingUrl(id: number): Promise<{ streamingUrl: string }> {
-    const response = await this.api.get(`/audio-files/${id}/stream`);
+  async getAudioFile(id: number): Promise<AudioFile> {
+    const response = await this.api.get<AudioFile>(`/audio-files/${id}`);
     return response.data;
   }
 }

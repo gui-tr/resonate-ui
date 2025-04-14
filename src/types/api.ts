@@ -8,15 +8,11 @@ export interface User {
 export interface ArtistProfile {
   userId: string;
   biography: string;
-  socialLinks: Record<string, string>;
-  createdAt: string;
 }
 
 export interface FanProfile {
   userId: string;
   subscriptionActive: boolean;
-  subscriptionStartDate: string;
-  createdAt: string;
 }
 
 export interface Release {
@@ -25,7 +21,6 @@ export interface Release {
   title: string;
   releaseDate: string;
   upc?: string;
-  createdAt: string;
   tracks?: Track[];
 }
 
@@ -36,8 +31,7 @@ export interface Track {
   isrc?: string;
   filePath: string;
   fileSize: number;
-  audioFile?: AudioFile;
-  createdAt: string;
+  release?: Release;
 }
 
 export interface AudioFile {
@@ -46,12 +40,10 @@ export interface AudioFile {
   fileUrl: string;
   fileSize: number;
   checksum: string;
-  createdAt: string;
 }
 
 export interface AuthResponse {
   userId: string;
-  token: string;
   userType?: 'artist' | 'fan';
 }
 

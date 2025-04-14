@@ -7,9 +7,18 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Releases } from './pages/Releases';
+import { ReleaseDetail } from './pages/ReleaseDetail';
 
-// Create a client
-const queryClient = new QueryClient();
+// Create a client with default options
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
 
 function App() {
   return (
@@ -34,6 +43,13 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <Releases />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/releases/:id" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ReleaseDetail />
                   </Layout>
                 </ProtectedRoute>
               } />

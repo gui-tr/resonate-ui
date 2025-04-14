@@ -13,8 +13,9 @@ export function Releases() {
     queryFn: () => apiService.getReleases(page, pageSize)
   });
 
-  const totalPages = data ? Math.ceil(data.total / pageSize) : 0;
-  const totalItems = data?.total || 0;
+  const releases = data || [];
+  const totalPages = Math.ceil(releases.length / pageSize);
+  const totalItems = releases.length;
   const startItem = page * pageSize + 1;
   const endItem = Math.min((page + 1) * pageSize, totalItems);
 
@@ -25,14 +26,17 @@ export function Releases() {
       </div>
 
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
+        <div className="px-4 py-5 sm:px-6">
+          <h2 className="text-lg font-medium text-gray-900">All Releases</h2>
+        </div>
         {isLoading ? (
           <div className="px-4 py-5 sm:px-6">Loading...</div>
-        ) : data?.content.length === 0 ? (
+        ) : releases.length === 0 ? (
           <div className="px-4 py-5 sm:px-6 text-gray-500">No releases found</div>
         ) : (
           <>
             <ul className="divide-y divide-gray-200">
-              {data?.content.map((release) => (
+              {releases.map((release) => (
                 <li key={release.id}>
                   <Link to={`/releases/${release.id}`} className="block hover:bg-gray-50">
                     <div className="px-4 py-4 sm:px-6">

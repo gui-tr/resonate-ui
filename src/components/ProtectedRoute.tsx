@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 interface ProtectedRouteProps {
@@ -6,22 +6,15 @@ interface ProtectedRouteProps {
   requireArtist?: boolean;
 }
 
-export function ProtectedRoute({ children, requireArtist = false }: ProtectedRouteProps) {
-  const { user, isLoading } = useAuth();
-  const location = useLocation();
-
-  if (isLoading) {
-    return <div>Loading...</div>; // You might want to create a proper loading component
-  }
+export function ProtectedRoute({ children, requireArtist }: ProtectedRouteProps) {
+  const { user } = useAuth();
 
   if (!user) {
-    // Redirect to login page but save the attempted url
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (requireArtist && user.userType !== 'artist') {
-    // Redirect to dashboard if user is not an artist
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
