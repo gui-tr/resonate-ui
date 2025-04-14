@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Howl } from 'howler';
 import { apiService } from '../services/api';
 import { format } from 'date-fns';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 export function ReleaseDetail() {
   const { id } = useParams<{ id: string }>();
