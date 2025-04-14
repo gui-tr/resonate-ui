@@ -43,8 +43,10 @@ export interface AudioFile {
 }
 
 export interface AuthResponse {
+  token: string;
   userId: string;
-  userType?: 'artist' | 'fan';
+  userType: 'artist' | 'fan';
+  emailVerified: boolean;
 }
 
 export interface ApiError {

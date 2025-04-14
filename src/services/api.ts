@@ -35,6 +35,10 @@ class ApiService {
     return response.data;
   }
 
+  async resendVerificationEmail(email: string): Promise<void> {
+    await this.api.post('/auth/resend-verification', { email });
+  }
+
   // Artist profile endpoints
   async getArtistProfile(userId: string): Promise<ArtistProfile> {
     const response = await this.api.get<ArtistProfile>(`/artist-profiles/${userId}`);
